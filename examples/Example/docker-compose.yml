@@ -1,0 +1,35 @@
+name: clickhouse-migrate-example
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    platform: linux/amd64
+    container_name: example-clickhouse
+    restart: unless-stopped
+    environment:
+      - CLICKHOUSE_USER=example
+      - CLICKHOUSE_PASSWORD=example
+      - CLICKHOUSE_DB=example
+    ports:
+      - "39100:8123"
+    healthcheck:
+      test: [ "CMD-SHELL", "clickhouse-client --query 'SELECT 1'" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      
+  ch-migrate:
+    image: ch-migrate
+    container_name: ch-migrate
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    environment:
+      - CH_MIGRATIONS_HOST=clickhouse
+      - CH_MIGRATIONS_PORT=8123
+      - CH_MIGRATIONS_USER=example
+      - CH_MIGRATIONS_PASSWORD=example
+      - CH_MIGRATIONS_DATABASE=example
+    volumes:
+      - ./Migrations:/scripts
+    command: up --migrations-dir=/scripts
