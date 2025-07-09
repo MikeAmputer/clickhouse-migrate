@@ -1,0 +1,16 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ClickHouse.Migrate/Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+    <deployment type="dockerfile">
+      <settings>
+        <option name="imageTag" value="ch-migrate" />
+        <option name="buildOnly" value="true" />
+        <option name="containerName" value="ch-migrate" />
+        <option name="sourceFilePath" value="src/ClickHouse.Migrate/Dockerfile" />
+      </settings>
+    </deployment>
+    <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+    <method v="2">
+      <option name="Build" default="false" projectName="ClickHouse.Migrate" projectPath="$PROJECT_DIR$/src/ClickHouse.Migrate/ClickHouse.Migrate.csproj" />
+    </method>
+  </configuration>
+</component>
