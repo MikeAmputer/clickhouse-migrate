@@ -17,7 +17,7 @@ Migrations tool for ClickHouse, distributed as a Docker image. Built on top of t
 - HTTPS support
 
 ## Usage
-Run the tool using Docker, specifying the desired command (`up` or `down`) and configuration options.
+Run the tool using Docker, specifying the desired command (`up` or `down`) and configuration options. The directory containing migration files should be mounted into the container as a volume.
 
 ### Commands
 - `up`: Applies all pending migrations in the specified migrations directory.
