@@ -7,9 +7,9 @@ services:
     container_name: example-clickhouse
     restart: unless-stopped
     environment:
-      - CLICKHOUSE_USER=example
-      - CLICKHOUSE_PASSWORD=example
-      - CLICKHOUSE_DB=example
+      - CLICKHOUSE_USER=example_user
+      - CLICKHOUSE_PASSWORD=example_password
+      - CLICKHOUSE_DB=example_db
     ports:
       - "39100:8123"
     healthcheck:
@@ -19,7 +19,7 @@ services:
       retries: 10
       
   ch-migrate:
-    image: ch-migrate
+    image: mikeamputer/ch-migrate:latest
     container_name: ch-migrate
     depends_on:
       clickhouse:
@@ -27,9 +27,10 @@ services:
     environment:
       - CH_MIGRATIONS_HOST=clickhouse
       - CH_MIGRATIONS_PORT=8123
-      - CH_MIGRATIONS_USER=example
-      - CH_MIGRATIONS_PASSWORD=example
-      - CH_MIGRATIONS_DATABASE=example
+      - CH_MIGRATIONS_USER=example_user
+      - CH_MIGRATIONS_PASSWORD=example_password
+      - CH_MIGRATIONS_DATABASE=example_db
+      - CH_MIGRATIONS_DIRECTORY=/scripts
     volumes:
       - ./Migrations:/scripts
-    command: up --migrations-dir=/scripts
+    command: up
