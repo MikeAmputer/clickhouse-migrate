@@ -1,4 +1,7 @@
 # ch-migrate
+
+[![Docker](https://img.shields.io/badge/docker-ch--migrate-blue?logo=docker)](https://hub.docker.com/r/mikeamputer/ch-migrate)
+[![GHCR](https://img.shields.io/badge/ghcr.io-ch--migrate-blue?logo=github)](https://github.com/MikeAmputer/clickhouse-migrate/pkgs/container/ch-migrate)
 [![License](https://img.shields.io/github/license/MikeAmputer/clickhouse-migrate)](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/LICENSE)
 
 Migrations tool for ClickHouse, distributed as a Docker image. Built on top of the [ClickHouse.Facades](https://github.com/MikeAmputer/ClickHouse.Facades) .NET package, using HTTP client under the hood.
@@ -42,3 +45,52 @@ Migration files must be placed in the directory specified by `--migrations-dir` 
 0001_Initial.down.sql
 ```
 Each filename must start with a migration index like `0001_`, followed by migration name (underscores `_` are allowed), suffixed with the migration direction `.up` or `.down`, and ending with the `.sql` file extension. **Down migrations are optional.**
+
+### Quick Setup
+
+bash:
+```bash
+docker run --rm \
+  -e CH_MIGRATIONS_HOST="example.clickhouse.host" \
+  -e CH_MIGRATIONS_PORT="8123" \
+  -e CH_MIGRATIONS_USER="example_user" \
+  -e CH_MIGRATIONS_PASSWORD="example_password" \
+  -e CH_MIGRATIONS_DATABASE="example_db" \
+  -e CH_MIGRATIONS_DIRECTORY="/scripts" \
+  -v "$(pwd)/Migrations:/scripts" \
+  mikeamputer/ch-migrate:latest up
+``` 
+
+PowerShell:
+```powershell
+docker run --rm `
+  -e CH_MIGRATIONS_HOST="example.clickhouse.host" `
+  -e CH_MIGRATIONS_PORT="8123" `
+  -e CH_MIGRATIONS_USER="example_user" `
+  -e CH_MIGRATIONS_PASSWORD="example_password" `
+  -e CH_MIGRATIONS_DATABASE="example_db" `
+  -e CH_MIGRATIONS_DIRECTORY="/scripts" `
+  -v "${PWD}\Migrations:/scripts" `
+  mikeamputer/ch-migrate:latest up
+```
+
+Docker Compose:
+```yaml
+ch-migrate:
+  image: mikeamputer/ch-migrate:latest
+  environment:
+    - CH_MIGRATIONS_HOST=example.clickhouse.host
+    - CH_MIGRATIONS_PORT=8123
+    - CH_MIGRATIONS_USER=example_user
+    - CH_MIGRATIONS_PASSWORD=example_password
+    - CH_MIGRATIONS_DATABASE=example_db
+    - CH_MIGRATIONS_DIRECTORY=/scripts
+  volumes:
+    - ./Migrations:/scripts
+  command: up
+```
+
+> [!NOTE]
+> `docker-compose` does not support `--rm` (auto-remove) as part of the YAML service definition.
+>
+> For an example using `healthcheck`, see [this docker-compose example](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/examples/Example/docker-compose.yml).
