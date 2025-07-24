@@ -36,7 +36,7 @@ The tool supports configuration via command-line options or environment variable
 | `--migrations-dir`    | `CH_MIGRATIONS_DIRECTORY`      | Directory containing migration SQL files.      | (Required)        |
 | `--timeout-sec`       | `CH_MIGRATIONS_TIMEOUT`        | Command timeout in seconds.                    | 60                |
 | `--https-enabled`     | `CH_MIGRATIONS_HTTPS_ENABLED`  | Use HTTPS connection (`true`/`false`).         | `false`           |
-| `--rollback-on-fail`  | `CH_MIGRATIONS_ROLLBACK_ON_FAIL` | Automatically rollback on migration failure. | `false`           |
+| `--rollback-on-fail`  | `CH_MIGRATIONS_ROLLBACK_ON_FAIL` | Automatically rollback on migration failure using the `down` migration if available. | `false`           |
 
 ### Migration Files
 Migration files must be placed in the directory specified by `--migrations-dir` (or `CH_MIGRATIONS_DIRECTORY`) and follow a naming convention such as:
@@ -45,6 +45,8 @@ Migration files must be placed in the directory specified by `--migrations-dir` 
 0001_Initial.down.sql
 ```
 Each filename must start with a migration index like `0001_`, followed by migration name (underscores `_` are allowed), suffixed with the migration direction `.up` or `.down`, and ending with the `.sql` file extension. **Down migrations are optional.**
+
+Migration files are split by the semicolon `;` into individual SQL statements. Since ClickHouse does not support executing multiple statements in a single query, each statement is executed separately. All statements in a migration are run within a session, so session-scoped features like temporary tables are supported. However, migrations are not executed within a transaction — if a failure occurs mid-migration, earlier statements will not be automatically rolled back. Use the `--rollback-on-fail` option to enable automatic rollback if needed.
 
 ### Quick Setup
 
