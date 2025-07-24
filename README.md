@@ -24,7 +24,7 @@ Run the tool using Docker, specifying the desired command (`up` or `down`) and c
 - `down <index>`: Reverts migrations to the specified migration index, rolling back all newer migrations.
 
 ### Configuration Options
-The tool supports configuration via command-line options or environment variables. Command-line options take precedence over environment variables. Boolean command-line arguments can not be used as flags - values should be provided explicitly `--https-enabled=true`.
+The tool supports configuration via command-line options or environment variables. Command-line options take precedence over environment variables. Boolean command-line arguments can not be used as flags — values should be provided explicitly `--https-enabled=true`.
 
 | Option                | Environment Variable           | Description                                    | Default           |
 |-----------------------|--------------------------------|------------------------------------------------|-------------------|
