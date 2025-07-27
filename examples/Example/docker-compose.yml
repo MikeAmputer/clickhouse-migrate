@@ -19,7 +19,7 @@ services:
       retries: 10
       
   ch-migrate:
-    image: ch-migrate
+    image: mikeamputer/ch-migrate:0.2.0
     container_name: ch-migrate
     depends_on:
       clickhouse:
