@@ -1,0 +1,18 @@
+﻿<clickhouse>
+
+	<users>
+
+		<example_user_crt>
+			<ssl_certificates>
+				<common_name>example_user</common_name>
+			</ssl_certificates>
+			<networks>
+				<ip>0.0.0.0/0</ip>
+			</networks>
+			<profile>default</profile>
+			<access_management>1</access_management>
+		</example_user_crt>
+
+	</users>
+
+</clickhouse>

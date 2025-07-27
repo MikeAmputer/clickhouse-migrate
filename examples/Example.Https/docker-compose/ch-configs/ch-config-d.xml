@@ -1,0 +1,27 @@
+<clickhouse>
+
+	<http_port remove="1"/>
+	<tcp_port remove="1"/>
+	<interserver_http_port remove="1"/>
+
+	<https_port>8443</https_port>
+	<tcp_port_secure>9440</tcp_port_secure>
+	<interserver_https_port>9010</interserver_https_port>
+
+	<openSSL>
+		<server>
+			<caConfig>/etc/clickhouse-server/certs/ca.pem</caConfig>
+			<certificateFile>/etc/clickhouse-server/certs/server.pem</certificateFile>
+			<privateKeyFile>/etc/clickhouse-server/certs/server.key</privateKeyFile>
+			<dhParamsFile>/etc/clickhouse-server/certs/dhparam.pem</dhParamsFile>
+			<verificationMode>relaxed</verificationMode>
+			<cacheSessions>true</cacheSessions>
+			<disableProtocols>sslv2,sslv3</disableProtocols>
+			<preferServerCiphers>true</preferServerCiphers>
+		</server>
+	</openSSL>
+
+	<mysql_port remove="1"/>
+	<postgresql_port remove="1"/>
+
+</clickhouse>
