@@ -100,7 +100,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         tag: "${{ github.event.inputs.version }}"
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
         generateReleaseNotes: true
         draft: true
         prerelease: false
