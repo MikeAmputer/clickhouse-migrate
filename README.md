@@ -15,6 +15,7 @@ Migrations tool for ClickHouse, distributed as a Docker image. Built on top of t
 - Down migrations support
 - Optional automatic rollback on migration fail
 - HTTPS support
+- Internal CA certificates support
 
 ## Usage
 Run the tool using Docker, specifying the desired command (`up` or `down`) and configuration options. The directory containing migration files should be mounted into the container as a volume.
@@ -92,7 +93,19 @@ ch-migrate:
   command: up
 ```
 
-> [!NOTE]
-> `docker-compose` does not support `--rm` (auto-remove) as part of the YAML service definition.
->
-> For an example using `healthcheck`, see [this docker-compose example](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/examples/Example/docker-compose.yml).
+`docker-compose` does not support `--rm` (auto-remove) as part of the YAML service definition.
+
+For an example using `healthcheck`, see [this docker-compose example](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/examples/Example/docker-compose.yml).
+
+### Using a Custom CA Certificate
+
+To enable HTTPS connections with a self-signed or internal CA certificate, mount a volume containing your `.crt` file into the container at `/usr/local/share/ca-certificates` (or mount a single `.crt` file directly). The certificate will be automatically installed during container startup.
+
+```yaml
+volumes:
+  - ca:/usr/local/share/ca-certificates:ro
+```
+
+Make sure the mounted directory contains valid `.crt` files and file permissions are set to `chmod 644`. These will be registered with the container's trusted store using `update-ca-certificates`.
+
+An example setup can be found in the [Example.Https directory](https://github.com/MikeAmputer/clickhouse-migrate/tree/master/examples/Example.Https).
