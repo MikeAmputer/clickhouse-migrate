@@ -1,0 +1,17 @@
+<config>
+	<openSSL>
+		<client>
+			<loadDefaultCAFile>false</loadDefaultCAFile>
+			<caConfig>/etc/clickhouse-server/certs/ca.pem</caConfig>
+			<certificateFile>/etc/clickhouse-server/certs/client.pem</certificateFile>
+			<privateKey>/etc/clickhouse-server/certs/client.key</privateKey>
+			<cacheSessions>true</cacheSessions>
+			<disableProtocols>sslv2,sslv3</disableProtocols>
+			<preferServerCiphers>true</preferServerCiphers>
+			<verificationMode>none</verificationMode>
+			<invalidCertificateHandler>
+				<name>AcceptCertificateHandler</name>
+			</invalidCertificateHandler>
+		</client>
+	</openSSL>
+</config>

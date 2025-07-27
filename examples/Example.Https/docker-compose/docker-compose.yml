@@ -1,0 +1,70 @@
+name: clickhouse-migrate-example
+
+services:
+  certgen:
+    build:
+      context: ./certgen
+    container_name: certgen
+    environment:
+      - CONTAINER_NAME=clickhouse
+      - USER_NAME=example_user
+      - CERT_DIR=/certs
+      - CA_DIR=/ca
+    volumes:
+      - clickhouse-certs:/certs
+      - ca:/ca
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    platform: linux/amd64
+    container_name: example-clickhouse
+    restart: unless-stopped
+    environment:
+      - CLICKHOUSE_DB=example_db
+      - CLICKHOUSE_USER=example_user
+      - CLICKHOUSE_PASSWORD=example_password
+    ports:
+      - "39100:8443"
+    volumes:
+      - clickhouse-certs:/etc/clickhouse-server/certs
+      - ./ch-configs/ch-config-d.xml:/etc/clickhouse-server/config.d/config.xml:ro
+      - ./ch-configs/docker_related_config.xml:/etc/clickhouse-server/config.d/docker_related_config.xml:ro
+      - ./ch-configs/ch-users-d.xml:/etc/clickhouse-server/users.d/users.xml:ro
+      - ./ch-configs/client-config.xml:/etc/clickhouse-client/config.xml:ro
+    depends_on:
+      certgen:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "clickhouse-client --secure --query 'SELECT 1'"
+      ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+
+  ch-migrate:
+    image: ch-migrate
+    container_name: ch-migrate
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    environment:
+      - CH_MIGRATIONS_HOST=clickhouse
+      - CH_MIGRATIONS_PORT=8443
+      - CH_MIGRATIONS_USER=example_user
+      - CH_MIGRATIONS_PASSWORD=example_password
+      - CH_MIGRATIONS_DATABASE=example_db
+      - CH_MIGRATIONS_DIRECTORY=/scripts
+      - CH_MIGRATIONS_HTTPS_ENABLED=true
+    volumes:
+      - ../Migrations:/scripts
+      - ca:/usr/local/share/ca-certificates:ro
+    command: up
+
+volumes:
+  clickhouse-certs:
+    driver: local
+  ca:
+    driver: local

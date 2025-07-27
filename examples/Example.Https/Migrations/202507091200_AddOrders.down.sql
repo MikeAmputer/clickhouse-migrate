@@ -1,0 +1,1 @@
+drop view if exists example_user_total_expenses_mv;

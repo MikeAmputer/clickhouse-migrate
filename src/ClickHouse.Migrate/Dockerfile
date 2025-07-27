@@ -7,14 +7,18 @@ RUN dotnet publish "ClickHouse.Migrate.csproj" -c Release -o /app/publish /p:Use
 
 
 FROM mcr.microsoft.com/dotnet/runtime:9.0.7-alpine3.22 AS final
+
+RUN apk add --no-cache ca-certificates su-exec bash
+
 WORKDIR /app
 COPY --from=publish /app/publish .
 
 ENV DOTNET_EnableDiagnostics=0
 
-# Create and use non-root user
 RUN addgroup -g 1001 appgroup && adduser -S -u 1001 -G appgroup appuser
-USER appuser
 
-ENTRYPOINT ["dotnet", "ClickHouse.Migrate.dll"]
+COPY --chown=appuser:appgroup entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["up"]
