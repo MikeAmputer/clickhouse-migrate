@@ -81,7 +81,7 @@ jobs:
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push images to GHCR
-      if: env.EXISTS_GHCR != 'true'
+      if: env.EXISTS_GHCR != 'true' && false
       run: |
         docker push ghcr.io/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
         docker push ghcr.io/${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
@@ -91,7 +91,16 @@ jobs:
       run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ env.NAMESPACE }} --password-stdin
 
     - name: Push images to Docker Hub
-      if: env.EXISTS_DOCKERHUB != 'true'
+      if: env.EXISTS_DOCKERHUB != 'true' && false
       run: |
         docker push ${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
         docker push ${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: "${{ github.event.inputs.version }}"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generateReleaseNotes: true
+        draft: true
+        prerelease: false
