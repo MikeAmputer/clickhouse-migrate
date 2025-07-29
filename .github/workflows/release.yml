@@ -14,8 +14,8 @@ env:
   IMAGE_NAME: ch-migrate
 
 jobs:
-  build-and-push:
-    name: Build and Push
+  build-and-push-docker:
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -96,6 +96,46 @@ jobs:
         docker push ${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
         docker push ${{ env.NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
 
+  pack-and-push-nuget:
+    name: Pack and Push NuGet Package
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Pack .NET CLI tool
+      run: |
+        dotnet pack ./src/ClickHouse.Migrate/ \
+          -c Release \
+          -o ./nuget \
+          /p:Version=${{ github.event.inputs.version }}
+
+    - name: Publish to NuGet.org
+      run: |
+        dotnet nuget push ./nuget/*.nupkg \
+          --skip-duplicate \
+          --source https://api.nuget.org/v3/index.json \
+          --api-key ${{ secrets.NUGET_ORG_API_KEY }}
+
+    - name: Upload NuGet package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ch-migrate-nuget
+        path: ./nuget/*.nupkg
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-and-push-docker, pack-and-push-nuget]
+
+    steps:
+    - name: Download NuGet artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ch-migrate-nuget
+        path: ./release-assets
+
     - name: Create GitHub Release
       uses: ncipollo/release-action@v1
       with:
@@ -104,3 +144,4 @@ jobs:
         generateReleaseNotes: true
         draft: true
         prerelease: false
+        artifacts: ./release-assets/*.nupkg
