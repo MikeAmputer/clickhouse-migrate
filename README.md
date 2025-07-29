@@ -4,7 +4,7 @@
 [![GHCR](https://img.shields.io/badge/ghcr.io-ch--migrate-blue?logo=github)](https://github.com/MikeAmputer/clickhouse-migrate/pkgs/container/ch-migrate)
 [![License](https://img.shields.io/github/license/MikeAmputer/clickhouse-migrate)](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/LICENSE)
 
-Migrations tool for ClickHouse, distributed as a Docker image. Built on top of the [ClickHouse.Facades](https://github.com/MikeAmputer/ClickHouse.Facades) .NET package, using HTTP client under the hood.
+Migrations tool for ClickHouse, distributed as a Docker image and .NET CLI tool. Built on top of the [ClickHouse.Facades](https://github.com/MikeAmputer/ClickHouse.Facades) .NET package, using HTTP client under the hood.
 
 > [!NOTE]
 > This is an unofficial tool and is not affiliated with or endorsed by ClickHouse Inc.
@@ -60,7 +60,7 @@ docker run --rm \
   -e CH_MIGRATIONS_PASSWORD="example_password" \
   -e CH_MIGRATIONS_DATABASE="example_db" \
   -e CH_MIGRATIONS_DIRECTORY="/scripts" \
-  -v "$(pwd)/Migrations:/scripts" \
+  -v "$(pwd)/migrations:/scripts" \
   mikeamputer/ch-migrate:latest up
 ``` 
 
@@ -73,7 +73,7 @@ docker run --rm `
   -e CH_MIGRATIONS_PASSWORD="example_password" `
   -e CH_MIGRATIONS_DATABASE="example_db" `
   -e CH_MIGRATIONS_DIRECTORY="/scripts" `
-  -v "${PWD}\Migrations:/scripts" `
+  -v "${PWD}\migrations:/scripts" `
   mikeamputer/ch-migrate:latest up
 ```
 
@@ -89,7 +89,7 @@ ch-migrate:
     - CH_MIGRATIONS_DATABASE=example_db
     - CH_MIGRATIONS_DIRECTORY=/scripts
   volumes:
-    - ./Migrations:/scripts
+    - ./migrations:/scripts
   command: up
 ```
 
@@ -109,3 +109,21 @@ volumes:
 Make sure the mounted directory contains valid `.crt` files and file permissions are set to `chmod 644`. These will be registered with the container's trusted store using `update-ca-certificates`.
 
 An example setup can be found in the [Example.Https directory](https://github.com/MikeAmputer/clickhouse-migrate/tree/master/examples/Example.Https).
+
+### .NET CLI Tool
+
+As an alternative to Docker, `ch-migrate` is also available as a .NET CLI tool via NuGet (`NET 8` or `NET 9` required):
+
+```
+dotnet tool install --global ClickHouse.Migrate.Cli
+```
+
+To update the template, use the `update` subcommand. To uninstall the template, use the `uninstall` subcommand.
+
+Once installed, run the tool using the ch-migrate command:
+
+```
+ch-migrate up --host localhost --user example_user --database example_db --migrations-dir ./migrations
+```
+
+You can also use environment variables for configuration (see table above).
