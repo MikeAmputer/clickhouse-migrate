@@ -104,6 +104,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
     - name: Pack .NET CLI tool
       run: |
         dotnet pack ./src/ClickHouse.Migrate/ \
