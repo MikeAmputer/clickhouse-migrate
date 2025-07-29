@@ -2,9 +2,29 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<LangVersion>default</LangVersion>
+
+		<PackAsTool>true</PackAsTool>
+		<ToolCommandName>ch-migrate</ToolCommandName>
+		<PackageOutputPath>./nupkg</PackageOutputPath>
+
+		<PackageProjectUrl>https://github.com/MikeAmputer/clickhouse-migrate</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MikeAmputer/clickhouse-migrate</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<PackageId>ClickHouse.Migrate.Cli</PackageId>
+		<Authors>Pavel Kravtsov</Authors>
+		<Description>CLI tool to migrate ClickHouse databases</Description>
+		<PackageTags>clickhouse, migrations</PackageTags>
+
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
@@ -16,11 +36,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath=""/>
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="entrypoint.sh">
 			<DependentUpon>Dockerfile</DependentUpon>
+			<Pack>false</Pack>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 		<None Update=".dockerignore">
 			<DependentUpon>Dockerfile</DependentUpon>
+			<Pack>false</Pack>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 

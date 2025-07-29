@@ -3,7 +3,7 @@ WORKDIR /src
 COPY . .
 
 ARG APP_VERSION=0.0.0
-RUN dotnet publish "ClickHouse.Migrate.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:Version=$APP_VERSION
+RUN dotnet publish "ClickHouse.Migrate.csproj" -f net9.0 -c Release -o /app/publish /p:UseAppHost=false /p:Version=$APP_VERSION
 
 
 FROM mcr.microsoft.com/dotnet/runtime:9.0.7-alpine3.22 AS final
