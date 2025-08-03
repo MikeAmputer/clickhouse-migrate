@@ -60,8 +60,10 @@ static IHostBuilder CreateHostBuilder(string[] args, MigrationOptions? options) 
 	Host.CreateDefaultBuilder(args)
 		.ConfigureLogging(logging =>
 		{
-			logging.ClearProviders();
-			logging.AddConsole();
+			logging
+				.ClearProviders()
+				.AddConsoleFormatter<CustomConsoleFormatter, CustomConsoleFormatterOptions>()
+				.AddConsole(options => options.FormatterName = nameof(CustomConsoleFormatter));
 #if DEBUG
 			logging.SetMinimumLevel(LogLevel.Debug);
 #else
