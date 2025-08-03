@@ -19,11 +19,13 @@ return await optionsResult.MapResult(
 		logger.LogAppVersion();
 		logger.LogInformation("Command: up");
 
+		var migrator = serviceProvider.GetRequiredService<IClickHouseMigrator>();
+		var migrationLog = migrator.MigrationLog;
+
 		try
 		{
-			var migrationLog = await serviceProvider.ClickHouseMigrateAsync();
+			await migrator.ApplyMigrationsAsync();
 
-			logger.LogMigrationEssentials(migrationLog);
 			logger.LogInformation("Database schema is up to date");
 		}
 		catch (Exception ex)
@@ -31,6 +33,14 @@ return await optionsResult.MapResult(
 			logger.LogError(ex, "An error occured during 'up' command execution");
 
 			return ErrorCodes.CommandExecutionError;
+		}
+		finally
+		{
+			logger.LogMigrationEssentials(migrationLog);
+			if (options.Verbose!.Value)
+			{
+				logger.LogMigrationStatements(migrationLog);
+			}
 		}
 
 		return 0;
@@ -45,11 +55,13 @@ return await optionsResult.MapResult(
 		logger.LogAppVersion();
 		logger.LogInformation("Command: down {Index}", options.Index);
 
+		var migrator = serviceProvider.GetRequiredService<IClickHouseMigrator>();
+		var migrationLog = migrator.MigrationLog;
+
 		try
 		{
-			var migrationLog = await serviceProvider.ClickHouseRollbackAsync(options.Index);
+			await migrator.RollbackAsync(options.Index);
 
-			logger.LogMigrationEssentials(migrationLog);
 			logger.LogInformation("Database schema was rolled back to {Index} state", options.Index);
 		}
 		catch (Exception ex)
@@ -57,6 +69,14 @@ return await optionsResult.MapResult(
 			logger.LogError(ex, "An error occured during 'down {Index}' command execution", options.Index);
 
 			return ErrorCodes.CommandExecutionError;
+		}
+		finally
+		{
+			logger.LogMigrationEssentials(migrationLog);
+			if (options.Verbose!.Value)
+			{
+				logger.LogMigrationStatements(migrationLog);
+			}
 		}
 
 		return 0;

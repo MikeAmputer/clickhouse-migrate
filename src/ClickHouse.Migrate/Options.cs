@@ -32,6 +32,9 @@ public abstract class MigrationOptions
 	[Option("rollback-on-fail", Required = false, HelpText = "Automatically rollback a migration if it fails.")]
 	public bool? RollbackOnFail { get; set; }
 
+	[Option("verbose", Required = false, HelpText = "Enable verbose logging.")]
+	public bool? Verbose { get; set; }
+
 	public bool ApplyEnvironmentFallback(ILogger logger)
 	{
 		Host ??= TryGetRequired("CH_MIGRATIONS_HOST", logger);
@@ -43,6 +46,7 @@ public abstract class MigrationOptions
 		TimeoutSeconds ??= TryParseInt("CH_MIGRATIONS_TIMEOUT") ?? 60;
 		HttpsEnabled ??= TryParseBool("CH_MIGRATIONS_HTTPS_ENABLED") ?? false;
 		RollbackOnFail ??= TryParseBool("CH_MIGRATIONS_ROLLBACK_ON_FAIL") ?? false;
+		Verbose ??= TryParseBool("CH_MIGRATIONS_VERBOSE") ?? true;
 
 		return Host is not null
 			&& User is not null
