@@ -27,17 +27,18 @@ Run the tool using Docker, specifying the desired command (`up` or `down`) and c
 ### Configuration Options
 The tool supports configuration via command-line options or environment variables. Command-line options take precedence over environment variables. Boolean command-line arguments can not be used as flags — values should be provided explicitly `--https-enabled=true`.
 
-| Option                | Environment Variable           | Description                                    | Default           |
-|-----------------------|--------------------------------|------------------------------------------------|-------------------|
-| `--host`              | `CH_MIGRATIONS_HOST`           | ClickHouse host.                               | (Required)        |
-| `--port`              | `CH_MIGRATIONS_PORT`           | ClickHouse port.                               | 8123              |
-| `--user`              | `CH_MIGRATIONS_USER`           | ClickHouse user.                               | (Required)        |
-| `--password`          | `CH_MIGRATIONS_PASSWORD`       | ClickHouse password.                           | (Optional)        |
-| `--database`          | `CH_MIGRATIONS_DATABASE`       | ClickHouse database.                           | (Required)        |
-| `--migrations-dir`    | `CH_MIGRATIONS_DIRECTORY`      | Directory containing migration SQL files.      | (Required)        |
-| `--timeout-sec`       | `CH_MIGRATIONS_TIMEOUT`        | Command timeout in seconds.                    | 60                |
-| `--https-enabled`     | `CH_MIGRATIONS_HTTPS_ENABLED`  | Use HTTPS connection (`true`/`false`).         | `false`           |
-| `--rollback-on-fail`  | `CH_MIGRATIONS_ROLLBACK_ON_FAIL` | Automatically rollback on migration failure using the `down` migration if available. | `false`           |
+| Option               | Environment Variable             | Description                                                                          | Default    |
+|----------------------|----------------------------------|--------------------------------------------------------------------------------------|------------|
+| `--host`             | `CH_MIGRATIONS_HOST`             | ClickHouse host.                                                                     | (Required) |
+| `--port`             | `CH_MIGRATIONS_PORT`             | ClickHouse port.                                                                     | 8123       |
+| `--user`             | `CH_MIGRATIONS_USER`             | ClickHouse user.                                                                     | (Required) |
+| `--password`         | `CH_MIGRATIONS_PASSWORD`         | ClickHouse password.                                                                 | (Optional) |
+| `--database`         | `CH_MIGRATIONS_DATABASE`         | ClickHouse database.                                                                 | (Required) |
+| `--migrations-dir`   | `CH_MIGRATIONS_DIRECTORY`        | Directory containing migration SQL files.                                            | (Required) |
+| `--timeout-sec`      | `CH_MIGRATIONS_TIMEOUT`          | Command timeout in seconds.                                                          | 60         |
+| `--https-enabled`    | `CH_MIGRATIONS_HTTPS_ENABLED`    | Use HTTPS connection (`true`/`false`).                                               | `false`    |
+| `--rollback-on-fail` | `CH_MIGRATIONS_ROLLBACK_ON_FAIL` | Automatically rollback on migration failure using the `down` migration if available. | `false`    |
+| `--verbose`          | `CH_MIGRATIONS_VERBOSE`          | Enable verbose logging.                                                              | `true`     |
 
 ### Migration Files
 Migration files must be placed in the directory specified by `--migrations-dir` (or `CH_MIGRATIONS_DIRECTORY`) and follow a naming convention such as:

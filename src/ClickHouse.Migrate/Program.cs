@@ -17,10 +17,31 @@ return await optionsResult.MapResult(
 		var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
 		logger.LogAppVersion();
+		logger.LogInformation("Command: up");
 
-		await serviceProvider.ClickHouseMigrateAsync();
+		var migrator = serviceProvider.GetRequiredService<IClickHouseMigrator>();
+		var migrationLog = migrator.MigrationLog;
 
-		logger.LogInformation("Database schema is up to date");
+		try
+		{
+			await migrator.ApplyMigrationsAsync();
+
+			logger.LogInformation("Database schema is up to date");
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "An error occured during 'up' command execution");
+
+			return ErrorCodes.CommandExecutionError;
+		}
+		finally
+		{
+			logger.LogMigrationEssentials(migrationLog);
+			if (options.Verbose!.Value)
+			{
+				logger.LogMigrationStatements(migrationLog);
+			}
+		}
 
 		return 0;
 	},
@@ -32,10 +53,31 @@ return await optionsResult.MapResult(
 		var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
 		logger.LogAppVersion();
+		logger.LogInformation("Command: down {Index}", options.Index);
 
-		await serviceProvider.ClickHouseRollbackAsync(options.Index);
+		var migrator = serviceProvider.GetRequiredService<IClickHouseMigrator>();
+		var migrationLog = migrator.MigrationLog;
 
-		logger.LogInformation("Database schema was rolled back to {Index} state", options.Index);
+		try
+		{
+			await migrator.RollbackAsync(options.Index);
+
+			logger.LogInformation("Database schema was rolled back to {Index} state", options.Index);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "An error occured during 'down {Index}' command execution", options.Index);
+
+			return ErrorCodes.CommandExecutionError;
+		}
+		finally
+		{
+			logger.LogMigrationEssentials(migrationLog);
+			if (options.Verbose!.Value)
+			{
+				logger.LogMigrationStatements(migrationLog);
+			}
+		}
 
 		return 0;
 	},
@@ -53,7 +95,7 @@ return await optionsResult.MapResult(
 			logger.LogError("Error while parsing command line arguments: {ErrorTag}", error.Tag.ToString());
 		}
 
-		return Task.FromResult(1);
+		return Task.FromResult(ErrorCodes.InvalidCommandLineArguments);
 	});
 
 static IHostBuilder CreateHostBuilder(string[] args, MigrationOptions? options) =>
@@ -84,7 +126,7 @@ static IHostBuilder CreateHostBuilder(string[] args, MigrationOptions? options) 
 
 					if (!optionsAreValid)
 					{
-						Environment.Exit(1);
+						Environment.Exit(ErrorCodes.InvalidOptions);
 					}
 
 					return options;
