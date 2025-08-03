@@ -2,6 +2,7 @@
 
 [![Docker](https://img.shields.io/badge/docker-ch--migrate-blue?logo=docker)](https://hub.docker.com/r/mikeamputer/ch-migrate)
 [![GHCR](https://img.shields.io/badge/ghcr.io-ch--migrate-blue?logo=github)](https://github.com/MikeAmputer/clickhouse-migrate/pkgs/container/ch-migrate)
+[![NuGet](https://img.shields.io/nuget/v/ClickHouse.Migrate.Cli)](https://www.nuget.org/packages/ClickHouse.Migrate.Cli/)
 [![License](https://img.shields.io/github/license/MikeAmputer/clickhouse-migrate)](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/LICENSE)
 
 Migrations tool for ClickHouse, distributed as a Docker image and .NET CLI tool. Built on top of the [ClickHouse.Facades](https://github.com/MikeAmputer/ClickHouse.Facades) .NET package, using HTTP client under the hood.
