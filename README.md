@@ -18,6 +18,7 @@ Migrations tool for ClickHouse, distributed as a Docker image and .NET CLI tool.
 - HTTPS support
 - Internal CA certificates support
 - C# migrations via `.cs` files, using `ClickHouse.Facades` notation
+- Conditional C# migrations based on ClickHouse server version
 
 ## Usage
 Run the tool using Docker, specifying the desired command (`up` or `down`) and configuration options. The directory containing migration files should be mounted into the container as a volume.
@@ -114,7 +115,6 @@ Make sure the mounted directory contains valid `.crt` files and file permissions
 An example setup can be found in the [Example.Https directory](https://github.com/MikeAmputer/clickhouse-migrate/tree/master/examples/Example.Https).
 
 ### .NET CLI Tool
-
 As an alternative to Docker, `ch-migrate` is also available as a .NET CLI tool via NuGet (`NET 8` or `NET 9` required):
 
 ```
@@ -130,3 +130,28 @@ ch-migrate up --host localhost --user example_user --database example_db --migra
 ```
 
 You can also use environment variables for configuration (see table above).
+
+### C# Migrations
+In addition to raw SQL files, `ch-migrate` supports C#-based migrations by using `.cs` files. These migrations are compiled at runtime and executed using the `ClickHouse.Facades` library.
+
+To write a C# migration, create a `.c`s file in your migrations directory. Each file must contain a class that inherits from `ClickHouseMigration` and is annotated with the `[ClickHouseMigration]` attribute, specifying a unique migration index and a descriptive name.
+
+```c#
+[ClickHouseMigration(101, "MyMigration")]
+public class MyMigrationClass : ClickHouseMigration
+{
+	protected override void Up(ClickHouseMigrationBuilder migrationBuilder)
+	{
+		migrationBuilder.AddRawSqlStatement("create table...");
+	}
+
+	protected override void Down(ClickHouseMigrationBuilder migrationBuilder)
+	{
+		migrationBuilder.AddRawSqlStatement("drop table...");
+	}
+}
+```
+
+You can conditionally execute logic based on the ClickHouse server version.
+
+For a full working example, see [this migration class](https://github.com/MikeAmputer/clickhouse-migrate/blob/master/examples/Example/Migrations/202507091600_AddGaugeMetrics.cs). For detailed API documentation, refer to the [ClickHouse.Facades migration guide](https://github.com/MikeAmputer/ClickHouse.Facades/wiki/Migrations#migration-class).
