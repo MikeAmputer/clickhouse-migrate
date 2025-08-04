@@ -134,7 +134,7 @@ You can also use environment variables for configuration (see table above).
 ### C# Migrations
 In addition to raw SQL files, `ch-migrate` supports C#-based migrations by using `.cs` files. These migrations are compiled at runtime and executed using the `ClickHouse.Facades` library.
 
-To write a C# migration, create a `.c`s file in your migrations directory. Each file must contain a class that inherits from `ClickHouseMigration` and is annotated with the `[ClickHouseMigration]` attribute, specifying a unique migration index and a descriptive name.
+To write a C# migration, create a `.cs` file in your migrations directory. Each file must contain a class that inherits from `ClickHouseMigration` and is annotated with the `[ClickHouseMigration]` attribute, specifying a unique migration index and a descriptive name.
 
 ```c#
 [ClickHouseMigration(101, "MyMigration")]
