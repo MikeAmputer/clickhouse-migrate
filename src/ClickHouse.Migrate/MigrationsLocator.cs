@@ -2,16 +2,13 @@
 
 namespace ClickHouse.Migrate;
 
-public class MigrationsLocator : ClickHouseDirectoryMigrationsLocator
+public class MigrationsLocator(MigrationOptions options) : AggregateClickHouseMigrationsLocator
 {
-	protected override string DirectoryPath => _migrationsDirectory;
+	private readonly MigrationOptions _options = options ?? throw new InvalidOperationException("Invalid options.");
 
-	private readonly string _migrationsDirectory;
-
-	public MigrationsLocator(MigrationOptions options)
-	{
-		ArgumentNullException.ThrowIfNull(options);
-
-		_migrationsDirectory = options.MigrationsDirectory ?? throw new InvalidOperationException("Invalid options.");
-	}
+	protected override IEnumerable<IClickHouseMigrationsLocator> Locators =>
+	[
+		new SqlMigrationsLocator(_options),
+		new RoslynMigrationsLocator(_options),
+	];
 }

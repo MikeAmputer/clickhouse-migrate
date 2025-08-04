@@ -1,0 +1,17 @@
+﻿using ClickHouse.Facades.Migrations;
+
+namespace ClickHouse.Migrate;
+
+public class SqlMigrationsLocator : ClickHouseDirectoryMigrationsLocator
+{
+	protected override string DirectoryPath => _migrationsDirectory;
+
+	private readonly string _migrationsDirectory;
+
+	public SqlMigrationsLocator(MigrationOptions options)
+	{
+		ArgumentNullException.ThrowIfNull(options);
+
+		_migrationsDirectory = options.MigrationsDirectory ?? throw new InvalidOperationException("Invalid options.");
+	}
+}
