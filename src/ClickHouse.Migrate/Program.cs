@@ -30,7 +30,10 @@ return await optionsResult.MapResult(
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "An error occured during 'up' command execution");
+			logger.LogError(
+				ex,
+				"An error occured during 'up' command execution: {Error}",
+				ex.Message);
 
 			return ErrorCodes.CommandExecutionError;
 		}
@@ -66,7 +69,11 @@ return await optionsResult.MapResult(
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "An error occured during 'down {Index}' command execution", options.Index);
+			logger.LogError(
+				ex,
+				"An error occured during 'down {Index}' command execution: {Error}",
+				options.Index,
+				ex.Message);
 
 			return ErrorCodes.CommandExecutionError;
 		}

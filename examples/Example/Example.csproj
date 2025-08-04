@@ -16,10 +16,15 @@
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<Compile Remove="Migrations\202507091600_AddGaugeMetrics.cs" />
+		<None Include="Migrations\202507091600_AddGaugeMetrics.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="Migrations\*.sql">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Migrations\*.cs">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="docker-compose.yml">
