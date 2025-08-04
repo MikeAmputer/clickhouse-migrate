@@ -45,7 +45,7 @@ services:
       start_period: 15s
 
   ch-migrate:
-    image: mikeamputer/ch-migrate:0.2.0
+    image: mikeamputer/ch-migrate:0.4.1
     container_name: ch-migrate
     depends_on:
       clickhouse:
