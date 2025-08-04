@@ -1,9 +1,11 @@
 [ClickHouseMigration(202507091600, "AddGaugeMetrics")]
-public class AddGaugeMetrics : ClickHouseMigration
+public class AddGaugeMetrics_Migration : ClickHouseMigration
 {
 	protected override void Up(ClickHouseMigrationBuilder migrationBuilder)
 	{
-		migrationBuilder.AddRawSqlStatement("""
+		migrationBuilder.SinceVersion("23.3", mb =>
+		{
+			mb.AddRawSqlStatement("""
 			create table if not exists metrics_gauge (
 				name				LowCardinality(String),
 				labels				Map(LowCardinality(String), String),
@@ -15,7 +17,8 @@ public class AddGaugeMetrics : ClickHouseMigration
 			engine = ReplacingMergeTree(ver)
 			primary key (name, labels)
 			order by (name, labels)
-		""");
+			""");
+		});
 	}
 
 	protected override void Down(ClickHouseMigrationBuilder migrationBuilder)
