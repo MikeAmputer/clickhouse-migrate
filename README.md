@@ -17,7 +17,7 @@ Migrations tool for ClickHouse, distributed as a Docker image and .NET CLI tool.
 - Optional automatic rollback on migration fail
 - HTTPS support
 - Internal CA certificates support
-- Optional C# migrations via `.cs` files, using `ClickHouse.Facades` notation
+- Support for both SQL and C# migrations (via `.cs` files, using `ClickHouse.Facades` notation)
 - Conditional C# migrations based on ClickHouse server version
 
 ## Usage
